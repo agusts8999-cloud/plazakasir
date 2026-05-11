@@ -42,6 +42,23 @@ export function ProductDialog({ product, mode, categories, licenses, releaseInfo
   const [releaseInfoId, setReleaseInfoId] = useState(product?.releaseInfoId || "");
   const [categoryId, setCategoryId] = useState(product?.categoryId || "");
   const [licenseId, setLicenseId] = useState(product?.licenseId || "");
+  
+  // Parse decimal from DB to integer string for display
+  const initialPrice = product?.price ? Math.floor(Number(product.price)).toString() : "";
+  const initialPromoPrice = product?.promoPrice ? Math.floor(Number(product.promoPrice)).toString() : "";
+
+  const [priceDisplay, setPriceDisplay] = useState(initialPrice);
+  const [promoPriceDisplay, setPromoPriceDisplay] = useState(initialPromoPrice);
+
+  const formatThousand = (val: string) => {
+    const num = val.replace(/\D/g, "");
+    return num ? new Intl.NumberFormat("id-ID").format(Number(num)) : "";
+  };
+
+  const handlePriceChange = (setter: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "");
+    setter(formatThousand(rawValue));
+  };
 
   const featuresString = product?.features?.map((f: any) => f.name).join(", ") || "";
 
@@ -121,7 +138,7 @@ export function ProductDialog({ product, mode, categories, licenses, releaseInfo
                   </div>
                   <div className="space-y-2">
                     <Label>Pilih Info Rilis (Jika Coming Soon)</Label>
-                    <Select name="releaseInfoId" value={releaseInfoId} onValueChange={setReleaseInfoId}>
+                    <Select name="releaseInfoId" value={releaseInfoId} onValueChange={(val) => setReleaseInfoId(val || "")}>
                       <SelectTrigger className="h-12 rounded-xl border-2 bg-background">
                         <SelectValue placeholder="Pilih Info Master Data">
                            {releaseInfos.find(i => i.id === releaseInfoId)?.title}
@@ -157,7 +174,7 @@ export function ProductDialog({ product, mode, categories, licenses, releaseInfo
                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   <div className="space-y-2">
                     <Label>Kategori</Label>
-                    <Select name="categoryId" value={categoryId} onValueChange={setCategoryId}>
+                    <Select name="categoryId" value={categoryId} onValueChange={(val) => setCategoryId(val || "")}>
                       <SelectTrigger className="h-12 rounded-xl border-2 bg-background">
                         <SelectValue placeholder="Pilih Kategori">
                            {categories.find(c => c.id === categoryId)?.name}
@@ -170,7 +187,7 @@ export function ProductDialog({ product, mode, categories, licenses, releaseInfo
                   </div>
                   <div className="space-y-2">
                     <Label>Lisensi</Label>
-                    <Select name="licenseId" value={licenseId} onValueChange={setLicenseId}>
+                    <Select name="licenseId" value={licenseId} onValueChange={(val) => setLicenseId(val || "")}>
                       <SelectTrigger className="h-12 rounded-xl border-2 bg-background">
                         <SelectValue placeholder="Pilih Lisensi">
                            {licenses.find(l => l.id === licenseId)?.name}
@@ -223,11 +240,30 @@ export function ProductDialog({ product, mode, categories, licenses, releaseInfo
                <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="price">Harga Normal (Rp)</Label>
-                    <Input id="price" name="price" type="number" defaultValue={product?.price} placeholder="0" className="h-12 rounded-xl border-2" required />
+                    <div className="relative">
+                      <Input 
+                        id="price_display" 
+                        value={formatThousand(priceDisplay)} 
+                        onChange={handlePriceChange(setPriceDisplay)}
+                        placeholder="0" 
+                        className="h-12 rounded-xl border-2 text-right font-mono font-bold pr-4" 
+                        required 
+                      />
+                      <input type="hidden" name="price" value={priceDisplay.replace(/\D/g, "")} />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="promoPrice">Harga Promo (Opsional)</Label>
-                    <Input id="promoPrice" name="promoPrice" type="number" defaultValue={product?.promoPrice} placeholder="0" className="h-12 rounded-xl border-2" />
+                    <div className="relative">
+                      <Input 
+                        id="promoPrice_display" 
+                        value={formatThousand(promoPriceDisplay)} 
+                        onChange={handlePriceChange(setPromoPriceDisplay)}
+                        placeholder="0" 
+                        className="h-12 rounded-xl border-2 text-right font-mono font-bold pr-4" 
+                      />
+                      <input type="hidden" name="promoPrice" value={promoPriceDisplay.replace(/\D/g, "")} />
+                    </div>
                   </div>
                </div>
             </div>

@@ -18,14 +18,22 @@ interface Product {
   image: string | null;
 }
 
-export function FeaturedProducts({ products }: { products: Product[] }) {
+export function FeaturedProducts({ 
+  products, 
+  title = "Software Unggulan", 
+  subtitle = "Beberapa aplikasi paling populer yang telah membantu ribuan UMKM Indonesia." 
+}: { 
+  products: Product[],
+  title?: string,
+  subtitle?: string
+}) {
   return (
     <section id="featured" className="py-32">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
           <div className="text-left">
-            <h2 className="text-4xl font-bold mb-4 tracking-tight">Software Unggulan</h2>
-            <p className="text-muted-foreground max-w-md">Beberapa aplikasi paling populer yang telah membantu ribuan UMKM Indonesia.</p>
+            <h2 className="text-4xl font-bold mb-4 tracking-tight">{title}</h2>
+            <p className="text-muted-foreground max-w-md">{subtitle}</p>
           </div>
           <Link href="/marketplace">
             <Button variant="link" className="text-primary font-bold group p-0">
@@ -44,15 +52,15 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
               transition={{ delay: index * 0.1 }}
               className="group"
             >
-              <div className="bg-background border border-border rounded-[2.5rem] p-6 transition-all hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden">
+              <div className="bg-background border border-border rounded-xl p-5 transition-all hover:border-primary/20 hover:shadow-xl overflow-hidden">
                 {/* Image Placeholder */}
-                <div className="relative aspect-[4/3] bg-secondary rounded-[1.5rem] mb-6 overflow-hidden flex items-center justify-center">
+                <div className="relative aspect-[4/3] bg-zinc-50 rounded-lg mb-6 overflow-hidden flex items-center justify-center border border-border/50">
                   {product.image ? (
-                    <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   ) : (
                     <div className="text-muted-foreground flex flex-col items-center">
-                       <Monitor size={48} strokeWidth={1} className="mb-2 opacity-20" />
-                       <span className="text-[10px] font-bold uppercase tracking-widest opacity-50">Preview Mockup</span>
+                       <Monitor size={48} strokeWidth={1} className="mb-2 opacity-10" />
+                       <span className="text-[10px] font-bold uppercase tracking-widest opacity-30">Preview Mockup</span>
                     </div>
                   )}
                   <div className="absolute top-4 left-4 flex gap-2">
@@ -91,13 +99,13 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
 
                   <div className="pt-4 flex items-center gap-2">
                     <Link href={`/marketplace/${product.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full rounded-2xl font-bold h-12 border-2 hover:bg-primary/5 transition-colors">
+                      <Button variant="outline" className="w-full rounded-md font-bold h-10 border border-border hover:bg-muted/5 transition-colors text-xs">
                         Lihat Detail
                       </Button>
                     </Link>
                     <Link href={`/marketplace/${product.id}`}>
-                       <Button className="rounded-2xl w-12 h-12 p-0 flex items-center justify-center shadow-lg shadow-primary/20">
-                          <Download size={20} />
+                       <Button className="rounded-md w-10 h-10 p-0 flex items-center justify-center shadow-sm">
+                          <Download size={16} />
                        </Button>
                     </Link>
                   </div>

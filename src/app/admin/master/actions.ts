@@ -4,25 +4,60 @@ import { db } from "@/lib/db";
 import { categories, licenses, releaseInfos } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { logActivity } from "@/lib/logger";
+
+const MASTER_BUSINESS_ID = "00000000-0000-0000-0000-000000000001";
 
 // --- Categories ---
 export async function createCategory(data: { name: string; slug: string }) {
-  await db.insert(categories).values({
-    id: crypto.randomUUID(),
-    name: data.name,
-    slug: data.slug,
-  });
-  revalidatePath("/admin/master");
+  try {
+    await db.insert(categories).values({
+      id: crypto.randomUUID(),
+      businessId: MASTER_BUSINESS_ID,
+      name: data.name,
+      slug: data.slug,
+    });
+    await logActivity({
+      action: "MENAMBAH_KATEGORI",
+      entity: "MasterData",
+      details: `Menambah kategori: ${data.name}`
+    });
+    revalidatePath("/admin/master");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Gagal menambah kategori." };
+  }
 }
 
 export async function updateCategory(id: string, data: { name: string; slug: string }) {
-  await db.update(categories).set(data).where(eq(categories.id, id));
-  revalidatePath("/admin/master");
+  try {
+    await db.update(categories).set(data).where(eq(categories.id, id));
+    await logActivity({
+      action: "UPDATE_KATEGORI",
+      entity: "MasterData",
+      details: `Mengubah kategori: ${data.name}`
+    });
+    revalidatePath("/admin/master");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Gagal memperbarui kategori." };
+  }
 }
 
 export async function deleteCategory(id: string) {
-  await db.delete(categories).where(eq(categories.id, id));
-  revalidatePath("/admin/master");
+  try {
+    const category = await db.query.categories.findFirst({ where: eq(categories.id, id) });
+    await db.update(categories).set({ deletedAt: new Date() }).where(eq(categories.id, id));
+    await logActivity({
+      action: "HAPUS_KATEGORI",
+      entity: "MasterData",
+      details: `Menghapus kategori: ${category?.name || id} (Soft Delete)`
+    });
+    revalidatePath("/admin/master");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Gagal menghapus kategori." };
+  }
 }
 
 // --- Licenses ---
@@ -41,8 +76,19 @@ export async function updateLicense(id: string, data: { name: string; descriptio
 }
 
 export async function deleteLicense(id: string) {
-  await db.delete(licenses).where(eq(licenses.id, id));
-  revalidatePath("/admin/master");
+  try {
+    const license = await db.query.licenses.findFirst({ where: eq(licenses.id, id) });
+    await db.update(licenses).set({ deletedAt: new Date() }).where(eq(licenses.id, id));
+    await logActivity({
+      action: "HAPUS_LISENSI",
+      entity: "MasterData",
+      details: `Menghapus lisensi: ${license?.name || id} (Soft Delete)`
+    });
+    revalidatePath("/admin/master");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Gagal menghapus lisensi." };
+  }
 }
 
 // --- Release Infos ---
@@ -62,6 +108,17 @@ export async function updateReleaseInfo(id: string, data: { title: string; conte
 }
 
 export async function deleteReleaseInfo(id: string) {
-  await db.delete(releaseInfos).where(eq(releaseInfos.id, id));
-  revalidatePath("/admin/master");
+  try {
+    const info = await db.query.releaseInfos.findFirst({ where: eq(releaseInfos.id, id) });
+    await db.update(releaseInfos).set({ deletedAt: new Date() }).where(eq(releaseInfos.id, id));
+    await logActivity({
+      action: "HAPUS_INFO_RILIS",
+      entity: "MasterData",
+      details: `Menghapus info rilis: ${info?.title || id} (Soft Delete)`
+    });
+    revalidatePath("/admin/master");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Gagal menghapus info rilis." };
+  }
 }

@@ -8,11 +8,26 @@ import Link from "next/link";
 interface HeroProps {
   title?: string;
   subtitle?: string;
+  highlightText?: string;
+  badgeText?: string;
   buttonText?: string;
+  buttonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
   image?: string;
 }
 
-export function Hero({ title, subtitle, buttonText, image }: HeroProps) {
+export function Hero({ 
+  title, 
+  subtitle, 
+  highlightText,
+  badgeText,
+  buttonText, 
+  buttonLink,
+  secondaryButtonText,
+  secondaryButtonLink,
+  image 
+}: HeroProps) {
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       {/* Background Glow */}
@@ -28,25 +43,27 @@ export function Hero({ title, subtitle, buttonText, image }: HeroProps) {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block py-1 px-4 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase mb-6">
-            Pusat Aplikasi Bisnis UMKM
+            {badgeText || "Pusat Aplikasi Bisnis UMKM"}
           </span>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight">
             {title || "Aplikasi Bisnis Murah"} <br />
-            <span className="text-primary italic">Tanpa Ribet.</span>
+            <span className="text-primary italic">{highlightText || "Tanpa Ribet."}</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
             {subtitle || "Kasir, stok, laundry, hingga restoran. Semua aplikasi yang Anda butuhkan untuk mendigitalisasi toko dalam satu klik."}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-            <Link href="/marketplace">
+            <Link href={buttonLink || "/marketplace"}>
               <Button size="lg" className="rounded-full px-8 h-14 text-base font-bold shadow-xl shadow-primary/20 group">
                 {buttonText || "Download Gratis"} <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base font-bold border-2">
-              <Play className="mr-2 fill-current" size={16} /> Lihat Demo
-            </Button>
+            <Link href={secondaryButtonLink || "#"}>
+              <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base font-bold border-2">
+                <Play className="mr-2 fill-current" size={16} /> {secondaryButtonText || "Lihat Demo"}
+              </Button>
+            </Link>
           </div>
         </motion.div>
 

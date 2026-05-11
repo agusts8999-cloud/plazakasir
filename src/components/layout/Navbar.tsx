@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, LayoutDashboard, LogOut, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface NavbarProps {
   siteTitle: string;
@@ -109,6 +110,8 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
                 {ctaText || "Download Gratis"}
               </Button>
             </Link>
+            <div className="h-6 w-[1px] bg-border mx-2" />
+            <ThemeToggle />
           </div>
 
           {/* Mobile Toggle */}
@@ -146,6 +149,10 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
                 <Link href="/marketplace" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full">{ctaText || "Download Gratis"}</Button>
                 </Link>
+                <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-2xl">
+                   <span className="text-sm font-bold text-muted-foreground">Mode Tampilan</span>
+                   <ThemeToggle />
+                </div>
               </div>
             </motion.div>
           )}

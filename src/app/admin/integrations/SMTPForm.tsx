@@ -15,6 +15,7 @@ import {
 import { Save, Loader2, Mail, ShieldCheck, User, Server } from "lucide-react";
 import { updateIntegrationSettings } from "./actions";
 import { toast } from "sonner";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export function SMTPForm({ initialData }: { initialData: any }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -95,7 +96,13 @@ export function SMTPForm({ initialData }: { initialData: any }) {
                  </div>
                  <div className="space-y-2">
                     <Label htmlFor="smtp_pass">App Password</Label>
-                    <Input id="smtp_pass" name="smtp_pass" type="password" defaultValue={getVal("smtp_pass")} placeholder="••••••••••••••••" className="h-12 rounded-xl border-2" />
+                    <PasswordInput 
+                      id="smtp_pass" 
+                      name="smtp_pass" 
+                      defaultValue={getVal("smtp_pass")} 
+                      placeholder="••••••••••••••••" 
+                      className="h-12" 
+                    />
                  </div>
               </div>
            </div>

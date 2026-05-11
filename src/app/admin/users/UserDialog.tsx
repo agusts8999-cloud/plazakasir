@@ -20,15 +20,15 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { UserPlus, Save, Loader2, Edit, Eye, EyeOff } from "lucide-react";
+import { UserPlus, Save, Loader2, Edit } from "lucide-react";
 import { createUser, updateUser } from "./actions";
 import { toast } from "sonner";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export function UserDialog({ roles, user, mode = "add" }: { roles: any[]; user?: any; mode?: "add" | "edit" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRoleId, setSelectedRoleId] = useState(user?.roleId || "");
-  const [showPassword, setShowPassword] = useState(false);
   
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -103,33 +103,22 @@ export function UserDialog({ roles, user, mode = "add" }: { roles: any[]; user?:
             </div>
             
             <div className="grid grid-cols-1 gap-4">
-               <div className="space-y-2 relative">
+               <div className="space-y-2">
                   <Label>Password {mode === "edit" && "(Opsional)"}</Label>
-                  <div className="relative">
-                    <Input 
-                      name="password" 
-                      type={showPassword ? "text" : "password"} 
-                      placeholder="********" 
-                      className="h-12 rounded-xl border-2 pr-12" 
-                      required={mode === "add"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
+                  <PasswordInput 
+                    name="password" 
+                    placeholder="********" 
+                    className="h-12" 
+                    required={mode === "add"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                </div>
                <div className="space-y-2">
                   <Label>Konfirmasi Password</Label>
-                  <Input 
-                    type={showPassword ? "text" : "password"} 
+                  <PasswordInput 
                     placeholder="********" 
-                    className="h-12 rounded-xl border-2" 
+                    className="h-12" 
                     required={mode === "add"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}

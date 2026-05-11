@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Instagram, Youtube, Layout, ShieldCheck, Mail, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { PasswordInput } from "@/components/ui/password-input";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -94,18 +95,14 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-12 h-12 rounded-xl border-2 focus-visible:ring-primary"
-                    required
-                  />
-                </div>
+                <PasswordInput
+                  id="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12"
+                  required
+                />
               </div>
               <Button 
                 type="submit" 

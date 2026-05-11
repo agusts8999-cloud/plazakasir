@@ -1,11 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { products, productFeatures, productRequirements } from "@/db/schema";
+import { products, productFeatures, productRequirements, purchases } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { eq } from "drizzle-orm";
+import { logActivity } from "@/lib/logger";
 
 async function uploadFile(file: File | null): Promise<string | null> {
   if (!file || file.size === 0) return null;
@@ -37,17 +38,19 @@ export async function createProduct(formData: FormData) {
 
   const name = formData.get("name") as string;
   const sku = (formData.get("sku") as string) || generateSKU(name);
+  const MASTER_BUSINESS_ID = "00000000-0000-0000-0000-000000000001";
 
   await db.insert(products).values({
     id: productId,
+    businessId: MASTER_BUSINESS_ID,
     sku: sku,
     name: name,
     description: formData.get("description") as string,
     price: formData.get("price") as string,
     promoPrice: formData.get("promoPrice") ? (formData.get("promoPrice") as string) : null,
     type: formData.get("type") as string,
-    categoryId: formData.get("categoryId") as string,
-    licenseId: formData.get("licenseId") as string,
+    categoryId: (formData.get("categoryId") as string) || null,
+    licenseId: (formData.get("licenseId") as string) || null,
     version: formData.get("version") as string,
     supportStatus: formData.get("supportStatus") as string,
     status: formData.get("status") as string || "LAUNCHED",
@@ -79,6 +82,12 @@ export async function createProduct(formData: FormData) {
     storage: formData.get("req_storage") as string,
   });
 
+  await logActivity({
+    action: "MENAMBAH_PRODUK",
+    entity: "Product",
+    details: `Menambah produk baru: ${name} (SKU: ${sku})`
+  });
+
   revalidatePath("/admin/products");
   revalidatePath("/marketplace");
   revalidatePath("/");
@@ -97,8 +106,8 @@ export async function updateProduct(id: string, formData: FormData) {
     price: formData.get("price") as string,
     promoPrice: formData.get("promoPrice") ? (formData.get("promoPrice") as string) : null,
     type: formData.get("type") as string,
-    categoryId: formData.get("categoryId") as string,
-    licenseId: formData.get("licenseId") as string,
+    categoryId: (formData.get("categoryId") as string) || null,
+    licenseId: (formData.get("licenseId") as string) || null,
     version: formData.get("version") as string,
     supportStatus: formData.get("supportStatus") as string,
     status: formData.get("status") as string,
@@ -136,12 +145,33 @@ export async function updateProduct(id: string, formData: FormData) {
     storage: formData.get("req_storage") as string,
   });
 
+  await logActivity({
+    action: "UPDATE_PRODUK",
+    entity: "Product",
+    details: `Mengubah data produk: ${updateData.name} (ID: ${id})`
+  });
+
   revalidatePath("/admin/products");
   revalidatePath("/marketplace");
   revalidatePath("/");
 }
 
 export async function deleteProduct(id: string) {
-  await db.delete(products).where(eq(products.id, id));
-  revalidatePath("/admin/products");
+  try {
+    const product = await db.query.products.findFirst({ where: eq(products.id, id) });
+    // Soft delete: Update deletedAt instead of physical delete
+    await db.update(products).set({ deletedAt: new Date() }).where(eq(products.id, id));
+    
+    await logActivity({
+      action: "HAPUS_PRODUK",
+      entity: "Product",
+      details: `Menghapus produk: ${product?.name || id} (Soft Delete)`
+    });
+
+    revalidatePath("/admin/products");
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Gagal menghapus produk. Terjadi kesalahan pada server." };
+  }
 }

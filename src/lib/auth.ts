@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
 import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db) as any,
@@ -22,32 +22,29 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Email / Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // For demo/development, we use a simple hardcoded admin
-        if (credentials.email === "admin@plazakasir.com" && credentials.password === "admin123") {
-          return {
-            id: "admin-1",
-            name: "PlazaKasir Admin",
-            email: "admin@plazakasir.com",
-            role: "ADMIN",
-          };
-        }
+        const user = await db.query.users.findFirst({
+          where: or(
+            eq(users.email, credentials.email),
+            eq(users.username, credentials.email)
+          ),
+        });
 
-        const results = await db.select().from(users).where(eq(users.email, credentials.email)).limit(1);
-        const user = results[0];
+        if (!user || !user.passwordHash) return null;
 
-        if (!user) return null;
+        // Simple check for now. In production, use bcrypt.
+        if (user.passwordHash !== credentials.password) return null;
 
         return {
           id: user.id,
-          name: user.name,
+          name: user.fullName,
           email: user.email,
-          role: user.role,
+          role: user.isSuperAdmin ? "ADMIN" : "USER",
         };
       },
     }),

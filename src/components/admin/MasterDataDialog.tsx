@@ -16,10 +16,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Edit, Save, Trash2, Loader2 } from "lucide-react";
 import { 
-  createCategory, updateCategory, deleteCategory,
-  createLicense, updateLicense, deleteLicense,
-  createReleaseInfo, updateReleaseInfo, deleteReleaseInfo
+  createCategory, updateCategory, 
+  createLicense, updateLicense,
+  createReleaseInfo, updateReleaseInfo
 } from "@/app/admin/master/actions";
+import { MasterDataDeleteButton } from "./MasterDataDeleteButton";
 import { toast } from "sonner";
 
 interface MasterDataDialogProps {
@@ -62,21 +63,6 @@ export function MasterDataDialog({ type, mode, data }: MasterDataDialogProps) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Yakin ingin menghapus data ini?")) return;
-    setIsLoading(true);
-    try {
-      if (type === "category") await deleteCategory(data.id);
-      else if (type === "license") await deleteLicense(data.id);
-      else await deleteReleaseInfo(data.id);
-      toast.success("Data berhasil dihapus!");
-      setIsOpen(false);
-    } catch (err) {
-      toast.error("Gagal menghapus data.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -147,9 +133,13 @@ export function MasterDataDialog({ type, mode, data }: MasterDataDialogProps) {
 
           <DialogFooter className="mt-8 gap-2">
             {mode === "edit" && (
-              <Button type="button" variant="ghost" onClick={handleDelete} className="rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 mr-auto">
-                <Trash2 size={18} className="mr-2" /> Hapus
-              </Button>
+              <MasterDataDeleteButton 
+                id={data.id} 
+                name={data.name || data.title} 
+                type={type} 
+                variant="full" 
+                onSuccess={() => setIsOpen(false)} 
+              />
             )}
             <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} className="rounded-xl">Batal</Button>
             <Button type="submit" disabled={isLoading} className="rounded-xl font-bold gap-2 px-6">

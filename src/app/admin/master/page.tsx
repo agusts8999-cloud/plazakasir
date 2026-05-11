@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { categories, licenses, releaseInfos } from "@/db/schema";
+import { isNull } from "drizzle-orm";
 import { 
   Table, 
   TableBody, 
@@ -10,11 +11,12 @@ import {
 } from "@/components/ui/table";
 import { Info, Tag, ShieldCheck } from "lucide-react";
 import { MasterDataDialog } from "@/components/admin/MasterDataDialog";
+import { MasterDataDeleteButton } from "@/components/admin/MasterDataDeleteButton";
 
 export default async function MasterDataPage() {
-  const cats = await db.select().from(categories);
-  const lics = await db.select().from(licenses);
-  const infos = await db.select().from(releaseInfos);
+  const cats = await db.select().from(categories).where(isNull(categories.deletedAt));
+  const lics = await db.select().from(licenses).where(isNull(licenses.deletedAt));
+  const infos = await db.select().from(releaseInfos).where(isNull(releaseInfos.deletedAt));
 
   return (
     <div className="space-y-12 pb-20">
@@ -49,7 +51,10 @@ export default async function MasterDataPage() {
                            <TableCell className="px-8 font-bold">{c.name}</TableCell>
                            <TableCell className="text-xs font-mono">{c.slug}</TableCell>
                            <TableCell className="text-right px-8">
-                              <MasterDataDialog type="category" mode="edit" data={c} />
+                              <div className="flex items-center justify-end gap-2">
+                                 <MasterDataDialog type="category" mode="edit" data={c} />
+                                 <MasterDataDeleteButton id={c.id} name={c.name} type="category" />
+                              </div>
                            </TableCell>
                         </TableRow>
                      ))}
@@ -81,7 +86,10 @@ export default async function MasterDataPage() {
                            <TableCell className="px-8 font-bold">{l.name}</TableCell>
                            <TableCell className="text-xs text-muted-foreground line-clamp-1 max-w-[150px]">{l.description}</TableCell>
                            <TableCell className="text-right px-8">
-                              <MasterDataDialog type="license" mode="edit" data={l} />
+                              <div className="flex items-center justify-end gap-2">
+                                 <MasterDataDialog type="license" mode="edit" data={l} />
+                                 <MasterDataDeleteButton id={l.id} name={l.name} type="license" />
+                              </div>
                            </TableCell>
                         </TableRow>
                      ))}
@@ -116,7 +124,10 @@ export default async function MasterDataPage() {
                         <TableCell className="text-sm text-muted-foreground max-w-md truncate">{info.content}</TableCell>
                         <TableCell className="text-sm font-medium text-orange-600">{info.estimateDate || "Segera"}</TableCell>
                         <TableCell className="text-right px-8">
-                           <MasterDataDialog type="releaseInfo" mode="edit" data={info} />
+                           <div className="flex items-center justify-end gap-2">
+                              <MasterDataDialog type="releaseInfo" mode="edit" data={info} />
+                              <MasterDataDeleteButton id={info.id} name={info.title} type="releaseInfo" />
+                           </div>
                         </TableCell>
                      </TableRow>
                   ))}

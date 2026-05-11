@@ -16,7 +16,8 @@ export function UserRoleToggle({ userId, currentRoleId, roles }: { userId: strin
   const [isLoading, setIsLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(currentRoleId || "");
 
-  const handleRoleChange = async (newRoleId: string) => {
+  const handleRoleChange = async (newRoleId: string | null) => {
+    if (!newRoleId) return;
     const previousId = selectedId;
     setSelectedId(newRoleId);
     setIsLoading(true);

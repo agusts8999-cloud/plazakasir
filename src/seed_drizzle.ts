@@ -5,11 +5,12 @@ import { eq } from "drizzle-orm";
 
 async function seed() {
   try {
+    const MASTER_BUSINESS_ID = "00000000-0000-0000-0000-000000000001";
     const cats = [
-      { id: "cat-1", name: "Kasir", slug: "kasir" },
-      { id: "cat-2", name: "Laundry", slug: "laundry" },
-      { id: "cat-3", name: "Restoran", slug: "restoran" },
-      { id: "cat-4", name: "Bengkel", slug: "bengkel" },
+      { id: "cat-1", businessId: MASTER_BUSINESS_ID, name: "Kasir", slug: "kasir" },
+      { id: "cat-2", businessId: MASTER_BUSINESS_ID, name: "Laundry", slug: "laundry" },
+      { id: "cat-3", businessId: MASTER_BUSINESS_ID, name: "Restoran", slug: "restoran" },
+      { id: "cat-4", businessId: MASTER_BUSINESS_ID, name: "Bengkel", slug: "bengkel" },
     ];
 
     for (const c of cats) {

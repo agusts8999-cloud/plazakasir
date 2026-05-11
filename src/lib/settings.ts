@@ -1,6 +1,40 @@
 import { db } from "./db";
-import { settings } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { businesses, settings } from "@/db/schema";
+import { eq, isNull, and } from "drizzle-orm";
+
+/**
+ * Mendapatkan informasi branding aplikasi dari Perusahaan Utama.
+ */
+export async function getAppBranding() {
+  try {
+    const mainCompany = await db.query.businesses.findFirst({
+      where: and(
+        eq(businesses.isMaster, true),
+        isNull(businesses.deletedAt)
+      )
+    });
+
+    if (mainCompany) {
+      return {
+        name: mainCompany.name,
+        email: mainCompany.email,
+        phone: mainCompany.phone,
+        address: mainCompany.address
+      };
+    }
+
+    // Fallback ke settings jika tidak ada main company
+    const siteTitle = await getSetting("site_title", "PlazaKasir");
+    return {
+      name: siteTitle,
+      email: "support@plazakasir.com",
+      phone: "-",
+      address: "-"
+    };
+  } catch (error) {
+    return { name: "PlazaKasir", email: "", phone: "", address: "" };
+  }
+}
 
 /**
  * Mendapatkan nilai setting berdasarkan key.

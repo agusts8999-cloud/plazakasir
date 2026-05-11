@@ -7,7 +7,7 @@ import {
   productRequirements,
   releaseInfos
 } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { DownloadFlow } from "@/components/sections/DownloadFlow";
+import { ShareButton } from "@/components/sections/ShareButton";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 
 export default async function ProductDetailPage({
   params,
@@ -39,7 +41,7 @@ export default async function ProductDetailPage({
   const results = await db
     .select()
     .from(productSchema)
-    .where(eq(productSchema.id, id))
+    .where(and(eq(productSchema.id, id), isNull(productSchema.deletedAt)))
     .limit(1);
     
   const product = results[0];
@@ -90,12 +92,12 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Main Visual */}
-            <div className="relative aspect-video bg-secondary rounded-[2.5rem] overflow-hidden mb-12 border border-border group">
+            <div className="relative aspect-video bg-zinc-100 rounded-xl overflow-hidden mb-12 border border-border group shadow-inner">
                {product.image ? (
-                  <Image src={product.image} alt={product.name} fill className="object-cover" />
+                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground">
-                    <Monitor size={64} className="opacity-20" />
+                    <Monitor size={64} className="opacity-10" />
                   </div>
                )}
                
@@ -156,7 +158,7 @@ export default async function ProductDetailPage({
 
           {/* Sidebar */}
           <div className="lg:col-span-4">
-             <div className="sticky top-32 p-8 bg-background border border-border rounded-[2.5rem] shadow-2xl shadow-primary/5">
+             <div className="sticky top-32 p-8 bg-background border border-border rounded-xl shadow-lg">
                 <div className="mb-8">
                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-2">Harga Software</p>
                    {product.type === "FREE" ? (
@@ -164,11 +166,11 @@ export default async function ProductDetailPage({
                    ) : (
                      <div className="flex items-end gap-3">
                         <span className="text-4xl font-black">
-                           Rp {Number(product.promoPrice || product.price).toLocaleString("id-ID")}
+                           {formatCurrency(product.promoPrice || product.price || 0)}
                         </span>
                         {product.promoPrice && (
                            <span className="text-lg text-muted-foreground line-through opacity-50 mb-1">
-                               Rp {Number(product.price).toLocaleString("id-ID")}
+                               {formatCurrency(product.price || 0)}
                            </span>
                         )}
                      </div>
@@ -201,9 +203,10 @@ export default async function ProductDetailPage({
                 )}
 
                 <div className="mt-8 pt-8 border-t border-border flex flex-col gap-4">
-                   <Button variant="outline" className="w-full rounded-2xl h-12 font-bold flex gap-2">
-                      <Share2 size={18} /> Bagikan Ke Teman
-                   </Button>
+                    <ShareButton 
+                       title={product.name} 
+                       text={`Cek aplikasi ${product.name} di PlazaKasir - Solusi Digital UMKM!`} 
+                    />
                    <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest font-bold">
                       Aman & Terpercaya oleh PlazaKasir
                    </p>

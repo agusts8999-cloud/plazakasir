@@ -1,10 +1,12 @@
 import { db } from "@/lib/db";
 import { products as productSchema, categories as categorySchema } from "@/db/schema";
-import { eq, and, ilike, desc } from "drizzle-orm";
+import { eq, and, ilike, desc, isNull } from "drizzle-orm";
 import { Input } from "@/components/ui/input";
 import { Search, Monitor } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
+import { getSetting } from "@/lib/settings";
 
 export default async function MarketplacePage({
   searchParams,
@@ -19,6 +21,7 @@ export default async function MarketplacePage({
 
   const whereConditions = [];
   whereConditions.push(eq(productSchema.isActive, true));
+  whereConditions.push(isNull(productSchema.deletedAt));
   
   if (cat && cat !== "Semua") {
     whereConditions.push(eq(categorySchema.name, cat));
@@ -43,13 +46,16 @@ export default async function MarketplacePage({
     .where(and(...whereConditions))
     .orderBy(desc(productSchema.createdAt));
 
+  const marketTitle = await getSetting("market_title", "Marketplace Aplikasi");
+  const marketSubtitle = await getSetting("market_subtitle", "Temukan berbagai aplikasi bisnis untuk mendigitalisasi operasional usaha Anda.");
+
   return (
     <div className="pt-32 pb-20">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
           <div className="max-w-xl">
-            <h1 className="text-4xl font-bold mb-4 tracking-tight">Marketplace Aplikasi</h1>
-            <p className="text-muted-foreground">Temukan berbagai aplikasi bisnis untuk mendigitalisasi operasional usaha Anda.</p>
+            <h1 className="text-4xl font-bold mb-4 tracking-tight">{marketTitle}</h1>
+            <p className="text-muted-foreground">{marketSubtitle}</p>
           </div>
           
           <form action="/marketplace" method="GET" className="relative w-full md:w-[350px]">
@@ -97,7 +103,7 @@ export default async function MarketplacePage({
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">{product.categoryName}</span>
                     <span className="text-sm font-black text-primary">
-                      {product.type === "FREE" ? "Rp 0" : `Rp ${Number(product.promoPrice || product.price).toLocaleString("id-ID")}`}
+                       {formatCurrency(product.type === "FREE" ? 0 : (product.promoPrice || product.price || 0))}
                     </span>
                   </div>
                 </Link>
