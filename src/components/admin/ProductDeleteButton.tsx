@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2, AlertTriangle, Loader2 } from "lucide-react";
-import { deleteProduct } from "@/app/admin/products/actions";
+import { deleteProduct } from "@/app/[locale]/admin/products/actions";
 import { toast } from "sonner";
 
 export function ProductDeleteButton({ productId, productName }: { productId: string; productName: string }) {

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Monitor, Smartphone } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface Product {
   id: string;
@@ -20,24 +21,28 @@ interface Product {
 
 export function FeaturedProducts({ 
   products, 
-  title = "Software Unggulan", 
-  subtitle = "Beberapa aplikasi paling populer yang telah membantu ribuan UMKM Indonesia." 
+  title, 
+  subtitle 
 }: { 
   products: Product[],
   title?: string,
   subtitle?: string
 }) {
+  const t = useTranslations("Home");
+  const displayTitle = title || t("featured_title");
+  const displaySubtitle = subtitle || t("featured_subtitle");
+
   return (
     <section id="featured" className="py-32">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
           <div className="text-left">
-            <h2 className="text-4xl font-bold mb-4 tracking-tight">{title}</h2>
-            <p className="text-muted-foreground max-w-md">{subtitle}</p>
+            <h2 className="text-4xl font-bold mb-4 tracking-tight">{displayTitle}</h2>
+            <p className="text-muted-foreground max-w-md">{displaySubtitle}</p>
           </div>
           <Link href="/marketplace">
             <Button variant="link" className="text-primary font-bold group p-0">
-              Lihat Semua Aplikasi <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
+              {t("featured_cta")} <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </div>
@@ -100,7 +105,7 @@ export function FeaturedProducts({
                   <div className="pt-4 flex items-center gap-2">
                     <Link href={`/marketplace/${product.id}`} className="flex-1">
                       <Button variant="outline" className="w-full rounded-md font-bold h-10 border border-border hover:bg-muted/5 transition-colors text-xs">
-                        Lihat Detail
+                        {t("view_detail")}
                       </Button>
                     </Link>
                     <Link href={`/marketplace/${product.id}`}>

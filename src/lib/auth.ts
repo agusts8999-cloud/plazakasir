@@ -1,5 +1,5 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
@@ -65,4 +65,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+};
+
+export const isAdmin = async () => {
+  const session = await getServerSession(authOptions);
+  return (session?.user as any)?.role === "ADMIN";
 };

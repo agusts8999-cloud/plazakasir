@@ -1,0 +1,46 @@
+{
+  "Navbar": {
+    "marketplace": "Marketplace",
+    "community": "Community",
+    "about": "About",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "download": "Free Download"
+  },
+  "Hero": {
+    "badge": "MSME Business App Hub",
+    "title": "Best Digital Solutions for Indonesian MSMEs",
+    "highlight": "Hassle Free.",
+    "subtitle": "Get various cashier and business management apps in one integrated platform.",
+    "primary_cta": "Get Started",
+    "secondary_cta": "Watch Demo"
+  },
+  "Footer": {
+    "solutions": "Solutions",
+    "resources": "Resources",
+    "company": "Company",
+    "rights": "All Rights Reserved."
+  },
+  "Login": {
+    "title": "Welcome Back",
+    "subtitle": "Login to manage your PlazaKasir dashboard.",
+    "email": "Email Address",
+    "password": "Password",
+    "button": "Login Now",
+    "processing": "Processing...",
+    "google": "Login with Google",
+    "or": "Or use",
+    "no_account": "Don't have an account?",
+    "register": "Register MSME",
+    "error": "Invalid email or password."
+  },
+  "Home": {
+    "categories_title": "Software Categories",
+    "categories_subtitle": "Choose the app that best suits your business type.",
+    "featured_title": "Featured Software",
+    "featured_subtitle": "Some of the most popular apps that have helped thousands of Indonesian MSMEs.",
+    "featured_cta": "View All Apps",
+    "view_detail": "View Detail",
+    "no_data": "No data available."
+  }
+}

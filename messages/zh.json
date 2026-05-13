@@ -1,0 +1,24 @@
+{
+  "Navbar": {
+    "marketplace": "市场",
+    "community": "社区",
+    "about": "关于",
+    "login": "登录",
+    "dashboard": "仪表盘",
+    "download": "免费下载"
+  },
+  "Hero": {
+    "badge": "中小微企业业务应用中心",
+    "title": "为印尼中小微企业提供的最佳数字解决方案",
+    "highlight": "轻松无忧。",
+    "subtitle": "在一个集成平台中获取各种收银和业务管理应用程序。",
+    "primary_cta": "立即开始",
+    "secondary_cta": "查看演示"
+  },
+  "Footer": {
+    "solutions": "解决方案",
+    "resources": "资源",
+    "company": "公司",
+    "rights": "版权所有。"
+  }
+}

@@ -1,5 +1,7 @@
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { Instagram, Youtube, Facebook, Twitter, Mail, Phone, MapPin, Globe, ChevronRight } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import { localeNames } from "@/navigation";
 
 interface FooterProps {
   siteFooter: string;
@@ -23,6 +25,8 @@ export function Footer({
   companyLinks = []
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const t = useTranslations("Footer");
+  const locale = useLocale();
 
   // Fallback links if none provided
   const defaultSolutions = [
@@ -103,12 +107,12 @@ export function Footer({
 
           {/* Nav Links Groups */}
           <div className="lg:col-span-2 space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Solusi Bisnis</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">{t("solutions")}</h4>
             <ul className="space-y-4">
               {displaySolutions.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm hover:text-primary flex items-center gap-2 group">
-                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                  <Link href={link.href as any} className="text-sm hover:text-primary flex items-center gap-2 group">
+                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 ltr:-translate-x-2 ltr:group-hover:translate-x-0 rtl:translate-x-2 rtl:group-hover:translate-x-0 transition-all" />
                     {link.name}
                   </Link>
                 </li>
@@ -117,12 +121,12 @@ export function Footer({
           </div>
 
           <div className="lg:col-span-3 space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Sumber Daya</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">{t("resources")}</h4>
             <ul className="space-y-4">
               {displayResources.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm hover:text-primary flex items-center gap-2 group">
-                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                  <Link href={link.href as any} className="text-sm hover:text-primary flex items-center gap-2 group">
+                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 ltr:-translate-x-2 ltr:group-hover:translate-x-0 rtl:translate-x-2 rtl:group-hover:translate-x-0 transition-all" />
                     {link.name}
                   </Link>
                 </li>
@@ -131,12 +135,12 @@ export function Footer({
           </div>
 
           <div className="lg:col-span-3 space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Perusahaan</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">{t("company")}</h4>
             <ul className="space-y-4">
               {displayCompany.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm hover:text-primary flex items-center gap-2 group">
-                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                  <Link href={link.href as any} className="text-sm hover:text-primary flex items-center gap-2 group">
+                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 ltr:-translate-x-2 ltr:group-hover:translate-x-0 rtl:translate-x-2 rtl:group-hover:translate-x-0 transition-all" />
                     {link.name}
                   </Link>
                 </li>
@@ -148,16 +152,16 @@ export function Footer({
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6 text-[11px]">
-            <p>{siteFooter || `© ${currentYear} PlazaKasir. Hak Cipta Dilindungi Undang-Undang.`}</p>
+            <p>{siteFooter || `© ${currentYear} PlazaKasir. ${t("rights")}`}</p>
           </div>
           
           <div className="flex items-center gap-8 text-[11px] font-medium">
              <div className="flex items-center gap-2 text-zinc-500">
                 <Globe size={14} />
-                <span>Bahasa Indonesia (ID)</span>
+                <span>{(localeNames as any)[locale]}</span>
              </div>
              <div className="flex items-center gap-2 text-zinc-500">
-                <span>PlazaKasir - Solusi Digital Terpercaya</span>
+                <span>PlazaKasir - Global Business Solutions</span>
              </div>
           </div>
         </div>

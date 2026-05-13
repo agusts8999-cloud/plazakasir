@@ -1,12 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LayoutDashboard, LogOut, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslations } from "next-intl";
 
 interface NavbarProps {
   siteTitle: string;
@@ -18,6 +20,7 @@ interface NavbarProps {
 
 export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: NavbarProps) {
   const { data: session } = useSession();
+  const t = useTranslations("Navbar");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -30,9 +33,9 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
   }, []);
 
   const defaultLinks = [
-    { name: "Marketplace", href: "/marketplace" },
-    { name: "Komunitas", href: "#community" },
-    { name: "Tentang", href: "#about" },
+    { name: t("marketplace"), href: "/marketplace" },
+    { name: t("community"), href: "#community" },
+    { name: t("about"), href: "#about" },
   ];
 
   const links = navLinks && navLinks.length > 0 ? navLinks : defaultLinks;
@@ -75,7 +78,7 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
             {links.map((link) => (
               <Link
                 key={link.name}
-                href={link.href}
+                href={link.href as any}
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
               >
                 {link.name}
@@ -86,7 +89,7 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
               <div className="flex items-center gap-3">
                 <Link href="/admin">
                   <Button variant="ghost" size="sm" className="font-medium gap-2">
-                    <LayoutDashboard size={16} /> Dashboard
+                    <LayoutDashboard size={16} /> {t("dashboard")}
                   </Button>
                 </Link>
                 <Button 
@@ -101,26 +104,30 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
             ) : (
               <Link href="/login">
                 <Button variant="ghost" size="sm" className="font-medium">
-                  Login
+                  {t("login")}
                 </Button>
               </Link>
             )}
             <Link href="/marketplace">
               <Button size="sm" className="rounded-full px-6 font-semibold shadow-md shadow-primary/10">
-                {ctaText || "Download Gratis"}
+                {ctaText || t("download")}
               </Button>
             </Link>
             <div className="h-6 w-[1px] bg-border mx-2" />
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
 
           {/* Mobile Toggle */}
-          <button
-            className="md:hidden text-foreground"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
+          <div className="flex items-center gap-3 md:hidden">
+            <LanguageSwitcher />
+            <button
+              className="text-foreground"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -135,7 +142,7 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
               {links.map((link) => (
                 <Link
                   key={link.name}
-                  href={link.href}
+                  href={link.href as any}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="text-lg font-medium text-foreground"
                 >
@@ -143,11 +150,19 @@ export function Navbar({ siteTitle, siteLogo, promoText, ctaText, navLinks }: Na
                 </Link>
               ))}
               <div className="pt-4 flex flex-col gap-3">
-                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">Login</Button>
-                </Link>
+                {session ? (
+                  <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full gap-2">
+                      <LayoutDashboard size={18} /> {t("dashboard")}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">{t("login")}</Button>
+                  </Link>
+                )}
                 <Link href="/marketplace" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full">{ctaText || "Download Gratis"}</Button>
+                  <Button className="w-full">{ctaText || t("download")}</Button>
                 </Link>
                 <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-2xl">
                    <span className="text-sm font-bold text-muted-foreground">Mode Tampilan</span>

@@ -1,0 +1,46 @@
+{
+  "Navbar": {
+    "marketplace": "Marketplace",
+    "community": "Komunitas",
+    "about": "Tentang",
+    "login": "Masuk",
+    "dashboard": "Dasbor",
+    "download": "Download Gratis"
+  },
+  "Hero": {
+    "badge": "Pusat Aplikasi Bisnis UMKM",
+    "title": "Solusi Digital Terbaik untuk UMKM Indonesia",
+    "highlight": "Tanpa Ribet.",
+    "subtitle": "Dapatkan berbagai aplikasi kasir dan manajemen bisnis dalam satu platform terintegrasi.",
+    "primary_cta": "Mulai Sekarang",
+    "secondary_cta": "Lihat Demo"
+  },
+  "Footer": {
+    "solutions": "Solusi",
+    "resources": "Sumber Daya",
+    "company": "Perusahaan",
+    "rights": "Semua Hak Dilindungi."
+  },
+  "Login": {
+    "title": "Selamat Datang",
+    "subtitle": "Masuk untuk mengelola dashboard PlazaKasir Anda.",
+    "email": "Alamat Email",
+    "password": "Password",
+    "button": "Masuk Sekarang",
+    "processing": "Memproses...",
+    "google": "Masuk dengan Google",
+    "or": "Atau gunakan",
+    "no_account": "Belum punya akun?",
+    "register": "Daftar UMKM",
+    "error": "Email atau password salah."
+  },
+  "Home": {
+    "categories_title": "Kategori Software",
+    "categories_subtitle": "Pilih aplikasi yang paling sesuai dengan jenis usaha Anda.",
+    "featured_title": "Software Unggulan",
+    "featured_subtitle": "Beberapa aplikasi paling populer yang telah membantu ribuan UMKM Indonesia.",
+    "featured_cta": "Lihat Semua Aplikasi",
+    "view_detail": "Lihat Detail",
+    "no_data": "Belum ada data."
+  }
+}

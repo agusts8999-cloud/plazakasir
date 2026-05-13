@@ -19,7 +19,7 @@ import {
   createCategory, updateCategory, 
   createLicense, updateLicense,
   createReleaseInfo, updateReleaseInfo
-} from "@/app/admin/master/actions";
+} from "@/app/[locale]/admin/master/actions";
 import { MasterDataDeleteButton } from "./MasterDataDeleteButton";
 import { toast } from "sonner";
 

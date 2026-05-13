@@ -5,7 +5,7 @@ import { eq, isNull, and } from "drizzle-orm";
 /**
  * Mendapatkan informasi branding aplikasi dari Perusahaan Utama.
  */
-export async function getAppBranding() {
+export async function getAppBranding(locale?: string) {
   try {
     const mainCompany = await db.query.businesses.findFirst({
       where: and(
@@ -24,7 +24,7 @@ export async function getAppBranding() {
     }
 
     // Fallback ke settings jika tidak ada main company
-    const siteTitle = await getSetting("site_title", "PlazaKasir");
+    const siteTitle = await getSetting("site_title", "PlazaKasir", locale);
     return {
       name: siteTitle,
       email: "support@plazakasir.com",
@@ -39,11 +39,20 @@ export async function getAppBranding() {
 /**
  * Mendapatkan nilai setting berdasarkan key.
  * Digunakan untuk Title, Footer, API Keys, dll.
+ * Mendukung prefix locale jika diberikan.
  */
-export async function getSetting(key: string, defaultValue: string = ""): Promise<string> {
+export async function getSetting(key: string, defaultValue: string = "", locale?: string): Promise<string> {
   try {
-    const result = await db.select().from(settings).where(eq(settings.key, key)).limit(1);
+    const finalKey = locale ? `${locale}_${key}` : key;
+    const result = await db.select().from(settings).where(eq(settings.key, finalKey)).limit(1);
     const setting = result[0];
+    
+    // Jika localized key tidak ditemukan, fallback ke default key
+    if (!setting && locale) {
+      const defaultResult = await db.select().from(settings).where(eq(settings.key, key)).limit(1);
+      return defaultResult[0]?.value ?? defaultValue;
+    }
+
     return setting?.value ?? defaultValue;
   } catch (error) {
     console.error(`Error fetching setting ${key}:`, error);

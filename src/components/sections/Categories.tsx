@@ -14,6 +14,7 @@ import {
   ShoppingBag
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const categories = [
   { name: "Kasir", icon: Store, color: "bg-blue-500" },
@@ -27,12 +28,14 @@ const categories = [
 ];
 
 export function Categories() {
+  const t = useTranslations("Home");
+
   return (
     <section id="categories" className="py-24 bg-secondary/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4 tracking-tight">Kategori Software</h2>
-          <p className="text-muted-foreground">Pilih aplikasi yang paling sesuai dengan jenis usaha Anda.</p>
+          <h2 className="text-3xl font-bold mb-4 tracking-tight">{t("categories_title")}</h2>
+          <p className="text-muted-foreground">{t("categories_subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -4,7 +4,7 @@ import { useTransition, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Trash } from "lucide-react";
-import { deleteProduct } from "@/app/admin/products/actions";
+import { deleteProduct } from "@/app/[locale]/admin/products/actions";
 import {
   AlertDialog,
   AlertDialogAction,

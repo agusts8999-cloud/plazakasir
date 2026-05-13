@@ -23,7 +23,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Plus, Edit, Save, Info, Cpu, ListChecks, Rocket } from "lucide-react";
-import { createProduct, updateProduct } from "@/app/admin/products/actions";
+import { createProduct, updateProduct } from "@/app/[locale]/admin/products/actions";
 
 interface ProductDialogProps {
   product?: any;

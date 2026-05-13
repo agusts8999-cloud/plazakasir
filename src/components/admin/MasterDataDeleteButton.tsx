@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2, AlertTriangle, Loader2 } from "lucide-react";
-import { deleteCategory, deleteLicense, deleteReleaseInfo } from "@/app/admin/master/actions";
+import { deleteCategory, deleteLicense, deleteReleaseInfo } from "@/app/[locale]/admin/master/actions";
 import { toast } from "sonner";
 
 interface MasterDataDeleteButtonProps {
