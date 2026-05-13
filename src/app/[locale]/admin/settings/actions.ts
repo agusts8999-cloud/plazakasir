@@ -21,6 +21,12 @@ export async function updateSetting(formData: FormData) {
     let logoUrl = formData.get("site_logo") as string;
 
     if (logoFile && logoFile.size > 0) {
+      const ext = logoFile.name.split('.').pop()?.toLowerCase();
+      const allowed = [".jpg", ".jpeg", ".png", ".webp", ".svg"];
+      if (!ext || !allowed.includes(`.${ext}`)) {
+        throw new Error("Format file logo tidak didukung.");
+      }
+
       const bytes = await logoFile.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const filename = `logo-${Date.now()}-${logoFile.name.replace(/\s+/g, "-")}`;

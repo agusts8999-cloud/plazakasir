@@ -316,8 +316,13 @@ export function ProductDialog({ product, mode, categories, licenses, releaseInfo
                   </div>
                </div>
                <div className="space-y-2">
-                  <Label>Upload File Installer (.zip/.exe)</Label>
-                  <Input type="file" name="download_file" className="h-12 rounded-xl border-2 pt-2" />
+                  <Label>Upload File Installer (.com, .exe, .rar, .zip, .apk)</Label>
+                  <Input 
+                    type="file" 
+                    name="download_file" 
+                    accept=".com,.exe,.rar,.zip,.apk" 
+                    className="h-12 rounded-xl border-2 pt-2" 
+                  />
                </div>
             </div>
           </div>

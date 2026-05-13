@@ -9,8 +9,16 @@ import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/logger";
 import { isAdmin } from "@/lib/auth";
 
-async function uploadFile(file: File | null): Promise<string | null> {
+async function uploadFile(file: File | null, allowedExtensions?: string[]): Promise<string | null> {
   if (!file || file.size === 0) return null;
+
+  if (allowedExtensions && allowedExtensions.length > 0) {
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (!ext || !allowedExtensions.includes(`.${ext}`)) {
+      throw new Error(`File type .${ext} is not allowed. Allowed: ${allowedExtensions.join(', ')}`);
+    }
+  }
+
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   
@@ -36,8 +44,8 @@ export async function createProduct(formData: FormData) {
   const imageFile = formData.get("image_file") as File;
   const downloadFile = formData.get("download_file") as File;
 
-  const imageUrl = await uploadFile(imageFile);
-  const downloadUrlFromBrowse = await uploadFile(downloadFile);
+  const imageUrl = await uploadFile(imageFile, [".jpg", ".jpeg", ".png", ".webp", ".svg"]);
+  const downloadUrlFromBrowse = await uploadFile(downloadFile, [".com", ".exe", ".rar", ".zip", ".apk"]);
 
   const name = formData.get("name") as string;
   const sku = (formData.get("sku") as string) || generateSKU(name);
@@ -102,8 +110,8 @@ export async function updateProduct(id: string, formData: FormData) {
   const imageFile = formData.get("image_file") as File;
   const downloadFile = formData.get("download_file") as File;
 
-  const imageUrl = await uploadFile(imageFile);
-  const downloadUrlFromBrowse = await uploadFile(downloadFile);
+  const imageUrl = await uploadFile(imageFile, [".jpg", ".jpeg", ".png", ".webp", ".svg"]);
+  const downloadUrlFromBrowse = await uploadFile(downloadFile, [".com", ".exe", ".rar", ".zip", ".apk"]);
 
   const updateData: any = {
     name: formData.get("name") as string,
